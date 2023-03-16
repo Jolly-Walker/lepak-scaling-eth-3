@@ -34,12 +34,12 @@ contract MainWallet is SimpleAccount {
         uint256 _amount, 
         address _token, 
         uint256 _period, 
-        address _firstPaymentBlock
+        uint256 _firstPaymentBlock
     ) public {
         ReccuringPayeeInfo memory newInfo;
         newInfo.paymentAmount = _amount;
         newInfo.token = _token;
-        newInfo.period = period;
+        newInfo.period = _period;
         newInfo.lastPaymentBlock - _firstPaymentBlock;
 
         reccuringPayments[_payeeWallet] = newInfo;
@@ -87,15 +87,17 @@ contract MainWallet is SimpleAccount {
     function recoverWalletTokens(address[] calldata _tokens) external {
         require(newAccount != address(0), "no recovery wallet was establised");
         for (uint256 i = 0; i < _tokens.length; i++) {
-            IERC20(_tokens).transfer(IERC20(_tokens).balanceOf(address(this)));
+            IERC20(_tokens[i]).transfer(newAccount, IERC20(_tokens[i]).balanceOf(address(this)));
         }
     }
 
     // anyone can call
     function recoverWalletEth() external {
         require(newAccount != address(0), "no recovery wallet was establised");
-        bool sent = newAccount.send(this.balance);
+        bool sent = payable(newAccount).send(address(this).balance);
         require(sent, "Failed to send Ether");
+
+        // emit some event
     }
 
     // function recoverWalletNFTs(address[] calldata _tokens) external {
