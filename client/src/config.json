@@ -1,0 +1,8 @@
+{
+	"bundlerUrl": "https://node.stackup.sh/v1/rpc/2f3e697dacd7c63f6a1da42135d036d0ae06cfebe806e6bcf50a28efff7a923d",
+	"rpcUrl": "https://node.stackup.sh/v1/rpc/2f3e697dacd7c63f6a1da42135d036d0ae06cfebe806e6bcf50a28efff7a923d",
+	"signingKey": "0xac5bbdd9b7138f413e849e9e9d91d9a81735bbbf9a661ac4818f195c23a74afa",
+	"entryPoint": "0x0576a174D229E3cFA37253523E645A78A0C91B57",
+	"simpleAccountFactory": "0x71D63edCdA95C61D6235552b5Bc74E32d8e2527B",
+	"paymasterUrl": "https://app.stackup.sh/api/v2/paymaster/payg/2f3e697dacd7c63f6a1da42135d036d0ae06cfebe806e6bcf50a28efff7a923d"
+}
