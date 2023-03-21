@@ -1,30 +1,69 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// You can also run a script with `npx hardhat run <script>`. If you do that, Hardhat
-// will compile your contracts, add the Hardhat Runtime Environment's members to the
-// global scope, and execute the script.
 const hre = require("hardhat");
 
 async function main() {
-  const currentTimestampInSeconds = Math.round(Date.now() / 1000);
-  const ONE_YEAR_IN_SECS = 365 * 24 * 60 * 60;
-  const unlockTime = currentTimestampInSeconds + ONE_YEAR_IN_SECS;
+  // We get the account to deploy the contract with
+  const { deployer } = await hre.getNamedAccounts();
 
-  const lockedAmount = hre.ethers.utils.parseEther("1");
+  console.log("Deploying contracts with the account:", deployer);
+  const signer = await hre.ethers.provider.getSigner(deployer);
 
-  const Lock = await hre.ethers.getContractFactory("Lock");
-  const lock = await Lock.deploy(unlockTime, { value: lockedAmount });
+  const AttestationStation = await hre.ethers.getContractFactory(
+    "AttestationStation"
+  );
 
-  await lock.deployed();
+  const attestationStation = await AttestationStation.connect(signer).deploy();
+
+  await attestationStation.deployed();
 
   console.log(
-    `Lock with 1 ETH and unlock timestamp ${unlockTime} deployed to ${lock.address}`
+    "AttestationStation contract deployed to:",
+    attestationStation.address
+  );
+
+  const AttestationStationProxy = await hre.ethers.getContractFactory(
+    "AttestationStationProxy"
+  );
+
+  const attestationStationProxy = await AttestationStationProxy.connect(
+    signer
+  ).deploy(signer._address);
+
+  await attestationStationProxy.deployed();
+
+  console.log(
+    "AttestationStationProxy contract deployed to:",
+    attestationStationProxy.address,
+    "with deployer address:",
+    signer._address
+  );
+
+  //call the upgrade function on the proxy
+  await attestationStationProxy
+    .attach(attestationStationProxy.address)
+    .upgradeTo(attestationStation.address);
+
+  console.log(
+    "AttestationStationProxy contract upgraded to:",
+    attestationStation.address
+  );
+
+  const AttestationProxy = await hre.ethers.getContractFactory(
+    "AttestationProxy"
+  );
+  const attestationProxy = await AttestationProxy.connect(signer).deploy(
+    attestationStationProxy.address
+  );
+
+  await attestationProxy.deployed();
+
+  console.log(
+    "AttestationProxy contract deployed to:",
+    attestationProxy.address,
+    "with proxy address:",
+    attestationStationProxy.address
   );
 }
 
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
 main().catch((error) => {
   console.error(error);
   process.exitCode = 1;
