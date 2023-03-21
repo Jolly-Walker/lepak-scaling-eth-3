@@ -16,6 +16,7 @@ contract MainWallet is SimpleAccount {
     }
     
     mapping(address => ReccuringPayeeInfo) public reccuringPayments;
+    address[] public payees;
     // address[] public socialRecoveryAccounts;
     address public attestationStation;
     address public recoveryAccount1;
@@ -35,14 +36,26 @@ contract MainWallet is SimpleAccount {
         address _token, 
         uint256 _period, 
         uint256 _firstPaymentBlock
-    ) public {
+    ) public onlyOwner {
         ReccuringPayeeInfo memory newInfo;
         newInfo.paymentAmount = _amount;
         newInfo.token = _token;
         newInfo.period = _period;
         newInfo.lastPaymentBlock - _firstPaymentBlock;
 
+        payees.push(_payeeWallet);
         reccuringPayments[_payeeWallet] = newInfo;
+        // emit some event
+    }
+
+    // only wallet owner can call
+    function removeReccuringPayment(
+        uint256 _payeeIndex
+    ) public onlyOwner {
+        address payeeWallet = payees[_payeeIndex];
+        payees[_payeeIndex] = payees[payees.length-1];
+        payees.pop();
+        delete reccuringPayments[payeeWallet];
         // emit some event
     }
 
@@ -68,7 +81,7 @@ contract MainWallet is SimpleAccount {
     }
 
     // only wallet owner can call
-    function setUpSocialRecovery(address _account1, address _account2, address _account3) external {
+    function setUpSocialRecovery(address _account1, address _account2, address _account3) external onlyOwner {
         recoveryAccount1 = _account1;
         recoveryAccount2 = _account2;
         recoveryAccount3 = _account3;
