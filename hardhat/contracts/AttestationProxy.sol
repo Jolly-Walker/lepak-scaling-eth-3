@@ -4,11 +4,12 @@ pragma solidity ^0.8.17;
 // To verify signatures
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-// The owner is the signer
+// Only the owner can change the attestation station
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
 interface IAttestationStation {
     struct AttestationData {
+        address creator;
         address about;
         bytes32 key;
         bytes val;
@@ -60,17 +61,20 @@ contract AttestationProxy is Ownable {
         bytes memory _val,
         bytes memory _signature
     ) public {
-        _verifySignature(_about, _key, _val, _signature);
+        bool pass = _verifySignature(_about, _key, _val, _signature);
+
+        require(pass, "AttestationProxy: Invalid signature");
 
         // Send the attestation to the Attestation Station.
         IAttestationStation.AttestationData[]
-            memory attestations = new IAttestationStation.AttestationData[](1);
-        attestations[0] = IAttestationStation.AttestationData({
+            memory attestation = new IAttestationStation.AttestationData[](1);
+        attestation[0] = IAttestationStation.AttestationData({
+            creator: msg.sender,
             about: _about,
             key: _key,
             val: _val
         });
-        attestationStation.attest(attestations);
+        attestationStation.attest(attestation);
     }
 
     /**
@@ -81,19 +85,29 @@ contract AttestationProxy is Ownable {
      * @param _signature The signer's signed message of the attestation.
      *
      * Requirements:
-     * - The signature must resolve to the signer.
+     * - The signature must resolve to the msg.sender.
      */
     function _verifySignature(
         address _about,
         bytes32 _key,
         bytes memory _val,
         bytes memory _signature
-    ) internal view {
+    ) internal view returns (bool) {
         bytes32 messageHash = keccak256(abi.encodePacked(_about, _key, _val));
-        require(
-            messageHash.toEthSignedMessageHash().recover(_signature) ==
-                msg.sender,
-            "AttestationProxy: Invalid signature"
-        );
+
+        return (messageHash.toEthSignedMessageHash().recover(_signature) ==
+            msg.sender);
+    }
+
+    /**
+     * @notice Transfers ownership of the contract to a new account (`newOwner`).
+     *
+     * @param _newOwner The address of the new owner.
+     *
+     * Requirements:
+     * - The caller must be the current owner.
+     */
+    function transferOwnership(address _newOwner) public override onlyOwner {
+        super.transferOwnership(_newOwner);
     }
 }
