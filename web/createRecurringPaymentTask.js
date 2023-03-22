@@ -5,6 +5,7 @@ import hre from "hardhat";
 
 export async function createRecurringPaymentTask(
     _payeeWallet,
+    _startTime,
     _interval,
     _userAccountAddress,
     _abi
@@ -24,8 +25,8 @@ export async function createRecurringPaymentTask(
     const userAccount = new Contract(_userAccountAddress, _abi, signer);
     const selector = userAccount.interface.getSighash("makeRecurringPayment(address)");
     const execData = userAccount.interface.encodeFunctionData("makeRecurringPayment", [_payeeWallet]);
-    const startTime = Math.floor(Date.now() / 1000) + 60; // start in 1 minute
-    const interval = 2 * 60; // exec every 5 minutes
+    const startTime = _startTime; // start timestamp in seconds or 0 to start immediately (default: 0)
+    const interval = _interval; // execution interval in seconds
 
     // Create task
     console.log("Creating Task...");
@@ -36,8 +37,10 @@ export async function createRecurringPaymentTask(
         execAbi: JSON.stringify(_abi),
         startTime,
         interval,
-        name: "Automated counter every 5min",
-        dedicatedMsgSender: true,
+        name: "Recurring payment",
+        dedicatedMsgSender: true, // Proxy caller 
+        singleExec: false, //Repeat the task
+        useTreasury: false // use false if your task is self-paying
     });
     await tx.wait();
     console.log(`Task created, taskId: ${taskId} (tx hash: ${tx.hash})`);
