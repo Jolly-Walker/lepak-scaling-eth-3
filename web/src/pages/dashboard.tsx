@@ -1,14 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import RecurCard from '@/components/RecurCard';
 import RecurModal from '@/components/RecurModal';
 
 export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(false);
+  const [wallet, setWallet] = useState({});
+
+  useEffect(() => {
+    const stored = localStorage.getItem('wallet');
+    setWallet(JSON.parse(stored));
+  }, [])
 
   return (
     <>
       <div className="space-y-6">
-        <h1 className="text-2xl font-bold">Welcome back, 0x1337</h1>
+        <h1 className="text-2xl font-bold">Welcome back, { wallet.address }</h1>
         <div className="flex flex-col md:flex-row gap-6">
           <div className="w-full bg-bg2 rounded-xl p-6 space-y-4">
             <h2 className="text-xl font-bold">Your balance</h2>
