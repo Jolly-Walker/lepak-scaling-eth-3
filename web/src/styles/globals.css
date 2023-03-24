@@ -5,3 +5,9 @@
 * {
   box-sizing: border-box;
 }
+
+@layer components {
+  .bg-grad {
+    @apply bg-gradient-to-tr from-primary to-secondary;
+  }
+}

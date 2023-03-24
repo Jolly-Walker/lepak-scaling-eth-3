@@ -10,9 +10,14 @@
   },
   "dependencies": {
 <<<<<<< HEAD
+<<<<<<< HEAD
     "@gelatonetwork/automate-sdk": "^2.1.0",
 =======
 >>>>>>> 081edcd99d460e1cf53ad1a9ef3bf50dde5a3d80
+=======
+    "@lottiefiles/lottie-player": "^1.7.1",
+    "@lottiefiles/react-lottie-player": "^3.5.3",
+>>>>>>> b2a9635dc576bc0c8ad909104a887eaa10e21dd8
     "@types/node": "18.15.3",
     "@types/react": "18.0.28",
     "@types/react-dom": "18.0.11",
