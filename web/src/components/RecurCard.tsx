@@ -4,7 +4,7 @@ export default function RecurCard({ paymentType }: { paymentType: string }) {
   const lookup = { monthly: 'bg-primary', weekly: 'bg-secondary text-bg' }; 
 
   return (
-    <div className="w-full bg-bg3 rounded-xl p-6">
+    <div className="w-full bg-bg2 rounded-xl p-6">
       <div className="flex gap-2 items-center mb-4">
         <p className="text-xl font-bold">Payment #1</p>
         <p className={ "text-sm font-medium px-1 rounded " + lookup[paymentType]}>

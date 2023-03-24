@@ -11,23 +11,23 @@ export default function RecurModal({ isOpen, setIsOpen }: { isOpen: boolean, set
             <div className="space-y-2 pb-4 pt-8">
               <div>
                 <label className="block mb-2">Payment address</label>
-                <input className="bg-bg3 rounded-lg p-2 w-full"/>
+                <input required className="input" placeholder="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"/>
               </div>
               <div>
                 <label className="block mb-2">Amount</label>
-                <input className="bg-bg3 rounded-lg p-2 w-full"/>
+                <input required className="input" placeholder="0.005 ETH"/>
               </div>
               <div>
                 <label className="block mb-2">Payment date</label>
-                <input type="date" className="bg-bg3 rounded-lg p-2 w-full"/>
+                <input required type="date" className="input"/>
               </div>
               <div className="flex gap-6 pt-2">
                 <div className="flex gap-2 items-center">
-                  <input id="monthly" name="recur" type="radio" className="w-6 h-6 accent-primary hover:cursor-pointer bg-bg3"/>
+                  <input required id="monthly" name="recur" type="radio" className="w-6 h-6 accent-primary hover:cursor-pointer bg-bg3"/>
                   <label htmlFor="monthly" className="hover:cursor-pointer">Monthly</label>
                 </div>
                 <div className="flex gap-2 items-center">
-                  <input id="weekly" name="recur" type="radio" className="w-6 h-6 accent-primary hover:cursor-pointer"/>
+                  <input required id="weekly" name="recur" type="radio" className="w-6 h-6 accent-primary hover:cursor-pointer"/>
                   <label htmlFor="weekly" className="hover:cursor-pointer">Weekly</label>
                 </div>
               </div>

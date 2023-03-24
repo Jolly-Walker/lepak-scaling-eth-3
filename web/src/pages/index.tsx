@@ -3,8 +3,8 @@ import animation from '@/lib/hero.json';
 
 export default function Home() {
   return (
-    <div className="flex justify-between items-center">
-      <div className="w-full">
+    <div className="flex justify-between items-center md:pt-12">
+      <div className="w-full hidden md:block">
         <Player
           autoplay
           loop
@@ -20,7 +20,7 @@ export default function Home() {
         <p className="text-xl lg:text-2xl max-w-7xl font-medium">
           Getting started with crypto and web3 and can be an overwhelming experience. 
           We take care of the complex, techy stuff for you so that you can get the 
-          best web3 experience without hassle.
+          best web3 experience without all the hassle.
         </p>
         <a href="/sign-up" className="text-xl bg-grad px-5 py-4 rounded-lg inline-block">
           Create your wallet

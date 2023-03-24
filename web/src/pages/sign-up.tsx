@@ -9,15 +9,15 @@ export default function SignUp() {
       {!isContinue
         ? (<>
           <h1 className="text-xl font-bold">Create your wallet</h1>
-          <p>desc</p>
+          <p>To get started with RecurPay, simply choose a strong, unique password to protect your wallet. We recommend using a combination of uppercase and lowercase letters, numbers, and special characters to create a strong password.</p>
           <div className="space-y-2 pb-4 pt-8">
             <div>
               <label className="block mb-2">Your password</label>
-              <input type="password" className="bg-bg3 rounded-lg p-2 w-full"/>
+              <input required type="password" className="input"/>
             </div>
             <div>
               <label className="block mb-2">Confirm your password</label>
-              <input type="password" className="bg-bg3 rounded-lg p-2 w-full"/>
+              <input required type="password" className="input"/>
             </div>
           </div>
           <button 
@@ -28,19 +28,29 @@ export default function SignUp() {
           </button>
         </>) : (<>
           <h1 className="text-xl font-bold">Add recovery addresses</h1>
-          <p>desc</p>
+          <p>Add atleast one recovery address to secure your wallet. You can choose a trusted friend or family member who will be able to help you regain access to your wallet in the event that you forget your password. You can have up to three recovery addresses.</p>
           <div className="space-y-2 pb-4 pt-8">
             <div>
               <label className="block mb-2">Address #1</label>
-              <input className="bg-bg3 rounded-lg p-2 w-full"/>
+              <input 
+                required
+                className="input" 
+                placeholder="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+              />
             </div>
             <div>
               <label className="block mb-2">Address #2</label>
-              <input className="bg-bg3 rounded-lg p-2 w-full"/>
+              <input 
+                className="input"
+                placeholder="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+              />
             </div>
             <div>
               <label className="block mb-2">Address #3</label>
-              <input className="bg-bg3 rounded-lg p-2 w-full"/>
+              <input 
+                className="input"
+                placeholder="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+              />
             </div>
           </div>
           <button 
