@@ -9,6 +9,12 @@ import {
 // @ts-ignore
 import config from "../config.json";
 
+/**
+ * Function to transfer fund
+ * @param to destination address
+ * @param amount amount to transfer
+ * @param withPM gas fee covered by paymaster
+ */
 export const transfer = async (
 	to: string,
 	amount: string,
@@ -42,9 +48,8 @@ export const transfer = async (
 		config.entryPoint
 	);
 	const uoHash = await client.sendUserOpToBundler(op);
-	console.log(`UserOpHash: ${uoHash}`);
-
-	console.log("Waiting for transaction...");
 	const txHash = await accountAPI.getUserOpReceipt(uoHash);
 	console.log(`Transaction hash: ${txHash}`);
+	console.log(accountAPI);
+	console.log(client);
 };

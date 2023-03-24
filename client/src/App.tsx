@@ -2,7 +2,7 @@ import { ChangeEvent, useState } from "react";
 import "./App.css";
 import { SimpleAccountAPI } from "@account-abstraction/sdk";
 import { ethers } from "ethers";
-import { getSimpleAccount } from "./utils";
+import { createSubscription, getSimpleAccount } from "./utils";
 import { transfer, erc20Transfer } from "./simpleAccount";
 import { DUMMY_TOKEN_POLYGON } from "./utils/constant";
 import config from "./config.json";
@@ -41,7 +41,8 @@ function App() {
 
 	const handleSubmit = async (e: any) => {
 		e.preventDefault();
-		erc20Transfer(DUMMY_TOKEN_POLYGON, form.address, form.amount, false);
+		// erc20Transfer(DUMMY_TOKEN_POLYGON, form.address, form.amount, false);
+		transfer(form.address, form.amount, false);
 	};
 
 	return (
@@ -52,6 +53,17 @@ function App() {
 					className="text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center mr-2 mb-2"
 				>
 					Create Wallet
+				</button>
+				<button
+					onClick={() =>
+						createSubscription(
+							"0xAEf53ef7640CF1b85A47c7603DE1126372E664c4",
+							"0.01",
+							60
+						)
+					}
+				>
+					Create Sub
 				</button>
 				{isLoading ? "Creating wallet" : wallet}
 				{wallet ? (

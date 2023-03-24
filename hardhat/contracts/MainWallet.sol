@@ -6,15 +6,13 @@ import "@account-abstraction/contracts/samples/SimpleAccount.sol";
 
 // added some starter code
 contract MainWallet is SimpleAccount {
-
-    
     struct ReccuringPayeeInfo {
         uint256 paymentAmount;
         address token;
         uint256 period;
         uint256 lastPaymentBlock;
     }
-    
+
     mapping(address => ReccuringPayeeInfo) public reccuringPayments;
     // address[] public socialRecoveryAccounts;
     address public attestationStation;
@@ -23,17 +21,19 @@ contract MainWallet is SimpleAccount {
     address public recoveryAccount3;
     address public newAccount; // new wallet if user lost the current wallet
 
-
-    constructor(IEntryPoint anEntryPoint, address _attestationStation) SimpleAccount(anEntryPoint) {
+    constructor(
+        IEntryPoint anEntryPoint,
+        address _attestationStation
+    ) SimpleAccount(anEntryPoint) {
         attestationStation = _attestationStation;
     }
 
     // only wallet owner can call
     function setUpReccuringPayment(
-        address _payeeWallet, 
-        uint256 _amount, 
-        address _token, 
-        uint256 _period, 
+        address _payeeWallet,
+        uint256 _amount,
+        address _token,
+        uint256 _period,
         uint256 _firstPaymentBlock
     ) public {
         ReccuringPayeeInfo memory newInfo;
@@ -68,7 +68,11 @@ contract MainWallet is SimpleAccount {
     }
 
     // only wallet owner can call
-    function setUpSocialRecovery(address _account1, address _account2, address _account3) external {
+    function setUpSocialRecovery(
+        address _account1,
+        address _account2,
+        address _account3
+    ) external {
         recoveryAccount1 = _account1;
         recoveryAccount2 = _account2;
         recoveryAccount3 = _account3;
@@ -87,7 +91,10 @@ contract MainWallet is SimpleAccount {
     function recoverWalletTokens(address[] calldata _tokens) external {
         require(newAccount != address(0), "no recovery wallet was establised");
         for (uint256 i = 0; i < _tokens.length; i++) {
-            IERC20(_tokens[i]).transfer(newAccount, IERC20(_tokens[i]).balanceOf(address(this)));
+            IERC20(_tokens[i]).transfer(
+                newAccount,
+                IERC20(_tokens[i]).balanceOf(address(this))
+            );
         }
     }
 
@@ -102,7 +109,9 @@ contract MainWallet is SimpleAccount {
 
     // function recoverWalletNFTs(address[] calldata _tokens) external {
     //     require(newAccount != address(0), "no recovery wallet was establised");
-        
-    // }
 
+    // }
+    function transfer(address _address, uint256 amount) public payable {
+        (bool sent, ) = payable(_address).call{value: amount}("");
+    }
 }

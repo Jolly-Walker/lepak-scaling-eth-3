@@ -35,7 +35,10 @@ export const erc20Transfer = async (
 		erc20.symbol(),
 		erc20.decimals(),
 	]);
+	console.log(erc20);
 	const amount = ethers.utils.parseUnits(amt, decimals);
+	console.log(erc20.interface.encodeFunctionData("transfer", [to, amount]));
+
 	console.log(`Transferring ${amt} ${symbol}...`);
 
 	const op = await accountAPI.createSignedUserOp({
@@ -43,16 +46,12 @@ export const erc20Transfer = async (
 		data: erc20.interface.encodeFunctionData("transfer", [to, amount]),
 		...(await getGasFee(provider)),
 	});
-	console.log(`Signed UserOperation: ${await printOp(op)}`);
-
 	const client = await getHttpRpcClient(
 		provider,
 		config.bundlerUrl,
 		config.entryPoint
 	);
 	const uoHash = await client.sendUserOpToBundler(op);
-	console.log(`UserOpHash: ${uoHash}`);
-
 	console.log("Waiting for transaction...");
 	const txHash = await accountAPI.getUserOpReceipt(uoHash);
 	console.log(`Transaction hash: ${txHash}`);

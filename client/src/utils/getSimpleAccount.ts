@@ -2,6 +2,15 @@ import { SimpleAccountAPI, PaymasterAPI } from "@account-abstraction/sdk";
 import { ethers } from "ethers";
 import { JsonRpcProvider } from "@ethersproject/providers";
 
+/**
+ * Function that return a simple wallet object
+ * @param provider RPC provider
+ * @param signingKey sender private key
+ * @param entryPointAddress ERC-4337 entry point address
+ * @param factoryAddress Simple account factory address
+ * @param paymasterAPI Paymaster API
+ * @returns
+ */
 export function getSimpleAccount(
 	provider: JsonRpcProvider,
 	signingKey: string,
@@ -18,7 +27,6 @@ export function getSimpleAccount(
 		paymasterAPI,
 	});
 
-	// Hack: default getUserOpReceipt does not include fromBlock which causes an error for some RPC providers.
 	sw.getUserOpReceipt = async (
 		userOpHash: string,
 		timeout = 30000,
@@ -40,6 +48,7 @@ export function getSimpleAccount(
 		}
 		return null;
 	};
-
+	console.log(owner);
+	console.log(sw);
 	return sw;
 }
