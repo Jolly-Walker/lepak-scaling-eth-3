@@ -1,5 +1,6 @@
 const { loadFixture } = require("@nomicfoundation/hardhat-network-helpers");
 const { expect } = require("chai");
+require("@nomicfoundation/hardhat-chai-matchers");
 
 describe("MainWallet", function () {
   async function deployTokenFixture() {
@@ -58,7 +59,10 @@ describe("MainWallet", function () {
     confirmRecoveryKey = encodeRawKey("confirm.account.recovery");
 
     //val 1 should be in bytes
-    val = ethers.utils.solidityPack(['address'], ["0xcd3B766CCDd6AE721141F452C550Ca635964ce71"]);
+    val = ethers.utils.solidityPack(
+      ["address"],
+      ["0xcd3B766CCDd6AE721141F452C550Ca635964ce71"]
+    );
 
     return {
       attestationStation,
@@ -175,7 +179,9 @@ describe("MainWallet", function () {
             .connect(addr3)
             .attest(mainWallet.address, confirmRecoveryKey, val, sigAddr3);
 
-          expect(await mainWallet.getAttestation(confirmRecoveryKey)).to.equal("0xcd3B766CCDd6AE721141F452C550Ca635964ce71");
+          expect(await mainWallet.getAttestation(confirmRecoveryKey)).to.equal(
+            "0xcd3B766CCDd6AE721141F452C550Ca635964ce71"
+          );
         });
 
         it("should return false if not all attestations are received", async function () {
@@ -227,7 +233,9 @@ describe("MainWallet", function () {
             .connect(addr2)
             .attest(mainWallet.address, confirmRecoveryKey, val, sigAddr2);
 
-          await expect(mainWallet.getAttestation(confirmRecoveryKey)).to.be.revertedWith("Attestations not done");
+          await expect(
+            mainWallet.getAttestation(confirmRecoveryKey)
+          ).to.be.revertedWith("Attestations not done");
         });
       });
     });
