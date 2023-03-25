@@ -44,6 +44,10 @@ contract MainWallet is SimpleAccount {
         attestationStationContract = AttestationStation(_attestationStation);
     }
 
+    function initialize(address anOwner) public override initializer {
+        _initialize(anOwner);
+    }
+
     // only wallet owner can call
     function setUpReccuringPayment(
         address _payeeWallet,
