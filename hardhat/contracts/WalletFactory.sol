@@ -16,8 +16,8 @@ contract SimpleAccountFactory {
     SimpleAccount public immutable accountImplementation;
     address public attestationStation;
 
-    constructor(IEntryPoint _entryPoint, address _attestationStation) {
-        accountImplementation = new MainWallet(_entryPoint, _attestationStation);
+    constructor(IEntryPoint _entryPoint, address _attestationStation, address _automate) {
+        accountImplementation = new MainWallet(_entryPoint, _attestationStation, _automate);
         attestationStation = _attestationStation;
     }
 
