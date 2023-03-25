@@ -11,8 +11,8 @@ encodeRawKey = (rawKey) => {
   return hash.slice(0, 64) + "ff";
 };
 
-attestationProxyAddr = "0xd0dAd0622b848f3f290B3611A5d5610BFA81bE09";
-attestationStationProxyAddr = "0xc2361C2Eb9fc7010f7FCb9F79d7bFAEEFE5CDAb2";
+attestationProxyAddr = "0x9aB93189D582C6C2ED33EC658023650231188475";
+attestationStationProxyAddr = "0x725552d5a03766908d1A919B168a622187076756";
 
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   const accounts = await hre.ethers.getSigners();
@@ -78,7 +78,12 @@ task("attestProxy", "Attest about an address through the proxy")
   });
 
 task("checkAttest", "Check the attestation made")
-  .addOptionalParam("fromAddress", "The address index to attest from")
+  .addOptionalParam(
+    "fromAddress",
+    "The address index to attest from",
+    8,
+    types.int
+  )
   .addParam("forAddress", "The address attested for")
   .addOptionalParam(
     "key",
@@ -91,12 +96,19 @@ task("checkAttest", "Check the attestation made")
     attestationStationProxy = AttestationStation.attach(
       attestationStationProxyAddr
     );
+
+    //get the signer
+    const signers = await ethers.getSigners();
+    signer = signers[taskArgs.fromAddress];
+
     console.log(
-      (await attestationStationProxy.attestations(
-        taskArgs.fromAddress,
-        taskArgs.forAddress,
-        encodeRawKey(taskArgs.key)
-      )) != "0x"
+      (await attestationStationProxy
+        .connect(signer)
+        .attestations(
+          signer.address,
+          taskArgs.forAddress,
+          encodeRawKey(taskArgs.key)
+        )) != "0x"
     );
   });
 
@@ -171,12 +183,20 @@ module.exports = {
         mnemonic: process.env.MNEMONIC,
       },
     },
+    scrollAlpha: {
+      url: process.env.SCROLL_ALPHA_RPC_URL,
+      chainId: 534353,
+      accounts: {
+        mnemonic: process.env.MNEMONIC,
+      },
+    },
   },
   namedAccounts: {
     deployer: {
       default: 6,
       ethSepolia: 6,
       optimismGoerli: 8,
+      scrollAlpha: 8,
     },
   },
   mocha: {
