@@ -1,5 +1,4 @@
 require("@nomicfoundation/hardhat-toolbox");
-require("@nomiclabs/hardhat-waffle");
 require("@nomiclabs/hardhat-ethers");
 require("hardhat-deploy");
 require("dotenv").config();
@@ -78,7 +77,12 @@ task("attestProxy", "Attest about an address through the proxy")
   });
 
 task("checkAttest", "Check the attestation made")
-  .addOptionalParam("fromAddress", "The address index to attest from")
+  .addOptionalParam(
+    "fromAddress",
+    "The address index to attest from",
+    8,
+    types.int
+  )
   .addParam("forAddress", "The address attested for")
   .addOptionalParam(
     "key",
@@ -91,12 +95,19 @@ task("checkAttest", "Check the attestation made")
     attestationStationProxy = AttestationStation.attach(
       attestationStationProxyAddr
     );
+
+    //get the signer
+    const signers = await ethers.getSigners();
+    signer = signers[taskArgs.fromAddress];
+
     console.log(
-      (await attestationStationProxy.attestations(
-        taskArgs.fromAddress,
-        taskArgs.forAddress,
-        encodeRawKey(taskArgs.key)
-      )) != "0x"
+      (await attestationStationProxy
+        .connect(signer)
+        .attestations(
+          signer.address,
+          taskArgs.forAddress,
+          encodeRawKey(taskArgs.key)
+        )) != "0x"
     );
   });
 
@@ -171,12 +182,20 @@ module.exports = {
         mnemonic: process.env.MNEMONIC,
       },
     },
+    scrollAlpha: {
+      url: process.env.SCROLL_ALPHA_RPC_URL,
+      chainId: 534353,
+      accounts: {
+        mnemonic: process.env.MNEMONIC,
+      },
+    },
   },
   namedAccounts: {
     deployer: {
       default: 6,
       ethSepolia: 6,
       optimismGoerli: 8,
+      scrollAlpha: 8,
     },
   },
   mocha: {
