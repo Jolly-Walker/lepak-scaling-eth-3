@@ -1,21 +1,22 @@
 import React from "react";
+import type { RecurPayment } from '@/lib/types';
 
-export default function RecurCard({ paymentType }: { paymentType: string }) {
+export default function RecurCard({ id, payment }: { id: number, payment: RecurPayment }) {
   const lookup = { monthly: "bg-primary", weekly: "bg-secondary text-bg" };
 
   return (
     <div className="w-full bg-bg2 rounded-xl p-6">
       <div className="flex gap-2 items-center mb-4">
-        <p className="text-xl font-bold">Payment #1</p>
+        <p className="text-xl font-bold">Payment #{id}</p>
         <p
-          className={"text-sm font-medium px-1 rounded " + lookup[paymentType]}
+          className={"text-sm font-medium px-1 rounded " + lookup[payment.frequency]}
         >
-          {paymentType}
+          {payment.frequency}
         </p>
       </div>
-      <p>To: 0x1337...</p>
-      <p>Amount: 0.005 ETH</p>
-      <p>Due date: 17 March 2023</p>
+      <p className="truncate">To: {payment.addrTo}</p>
+      <p>Amount: {payment.amount} ETH</p>
+      <p>Due date: {payment.date}</p>
     </div>
   );
 }

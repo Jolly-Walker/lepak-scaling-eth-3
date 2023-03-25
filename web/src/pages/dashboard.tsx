@@ -1,12 +1,25 @@
 import { useState, useEffect } from "react";
 import RecurCard from "@/components/RecurCard";
 import RecurModal from "@/components/RecurModal";
+import { payments } from '@/lib/polybase';
+import type { RecurPayment } from '@/lib/types';
 
 export default function Dashboard() {
   const [isOpen, setIsOpen] = useState(false);
   const [wallet, setWallet] = useState({});
+  const [recurringPayments, setRecurringPayments] = useState<RecurPayment[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // payments from lib/polybase doesn't run server side
+  const getPayments = async () => {
+    const res = await payments.get();
+    setRecurringPayments(res.data.map((d) => d.data));
+    setIsLoading(false);
+    console.log(res, recurringPayments)
+  }
 
   useEffect(() => {
+    getPayments()
     const stored = localStorage.getItem("wallet");
     setWallet(JSON.parse(stored));
   }, []);
@@ -180,13 +193,21 @@ export default function Dashboard() {
         </div>
         <h2 className="text-xl font-bold">Your recurring payments</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ">
-          <RecurCard paymentType="monthly" />
-          <RecurCard paymentType="monthly" />
-          <RecurCard paymentType="weekly" />
-          <RecurCard paymentType="weekly" />
+          {/* skeleton loader */}
+          { isLoading && [1, 2, 3].map((i) => (
+            <div className="w-full bg-bg3 rounded-xl p-6 animate-pulse space-y-4" key={i}>
+              <div className="h-8 bg-white bg-opacity-10 rounded-md" />
+              <div className="h-4 bg-white bg-opacity-10 rounded-md" />
+              <div className="h-4 bg-white bg-opacity-10 rounded-md" />
+              <div className="h-4 bg-white bg-opacity-10 rounded-md" />
+            </div>
+          ))}
+          {recurringPayments.map((p: RecurPayment, id) => (
+            <RecurCard key={id} id={id + 1} payment={p} />
+          ))}
           <button
             onClick={() => setIsOpen(true)}
-            className="max-w-xs bg-bg3 rounded-xl p-6 flex flex-col justify-center items-center gap-4 hover:cursor-pointer"
+            className="bg-bg3 rounded-xl p-6 flex flex-col justify-center items-center gap-4 hover:cursor-pointer"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -206,7 +227,11 @@ export default function Dashboard() {
           </button>
         </div>
       </div>
-      <RecurModal isOpen={isOpen} setIsOpen={setIsOpen} />
+      <RecurModal 
+        isOpen={isOpen} 
+        setIsOpen={setIsOpen} 
+        onClose={(r: RecurPayment) => setRecurringPayments([...recurringPayments, r])}
+      />
     </>
   );
 }
