@@ -2,7 +2,7 @@ const hre = require("hardhat");
 const {addressList} = require("../addresses.js");
 
 async function main() {
-    const walletFactoryDeployer = await ethers.getContractFactory('WalletFactory');
+    const walletFactoryDeployer = await ethers.getContractFactory('MainWalletFactory');
     const walletFactory = await walletFactoryDeployer.deploy(addressList.entryPoint, addressList.attestationStation);
     await walletFactory.deployed();
     console.log("wallet factory address deployed to:", walletFactory.address);
