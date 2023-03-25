@@ -14,13 +14,9 @@ contract MainWallet is SimpleAccount {
         address recoveryAccount3
     );
 
-    event NewAccountCreated(address newAccount);
+    event NewAccountIdentified(address newAccount);
 
-    event TokensRecovered(
-        address newAccount,
-        address tokenContractAddress,
-        uint256 tokenBalance
-    );
+    event TokensRecovered(address[] tokens);
 
     event EthRecovered(address newAccount, uint256 ethBalance);
 
@@ -34,8 +30,7 @@ contract MainWallet is SimpleAccount {
     mapping(address => ReccuringPayeeInfo) public reccuringPayments;
     address[] public payees;
     // address[] public socialRecoveryAccounts;
-    address public attestationStation;
-    AttestationStation attestationStationContract;
+    AttestationStation public attestationStationContract;
 
     address public recoveryAccount1;
     address public recoveryAccount2;
@@ -46,8 +41,7 @@ contract MainWallet is SimpleAccount {
         IEntryPoint anEntryPoint,
         address _attestationStation
     ) SimpleAccount(anEntryPoint) {
-        attestationStation = _attestationStation;
-        attestationStationContract = AttestationStation(attestationStation);
+        attestationStationContract = AttestationStation(_attestationStation);
     }
 
     // only wallet owner can call
@@ -124,16 +118,13 @@ contract MainWallet is SimpleAccount {
     // if signatures are valid, then
     // from the attestations, derive the address of the new wallet
     // set that wallet as newAccount
-    function recoverAccount(bytes32 recoveryKey) external returns (address) {
-        bool attestationStatus = getAttestation(recoveryKey);
-        require(attestationStatus, "Not all attestations are valid");
+    function recoverAccount(bytes32 recoveryKey) external {
+        address attestedAccount = getAttestation(recoveryKey);
 
         //Derive the new account address by calling the factory function, a sample is used for now
-        newAccount = 0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512;
+        newAccount = attestedAccount;
 
-        emit NewAccountCreated(newAccount);
-
-        return newAccount;
+        emit NewAccountIdentified(newAccount);
     }
 
     // anyone can call
@@ -144,12 +135,8 @@ contract MainWallet is SimpleAccount {
                 newAccount,
                 IERC20(_tokens[i]).balanceOf(address(this))
             );
-            emit TokensRecovered(
-                newAccount,
-                _tokens[i],
-                IERC20(_tokens[i]).balanceOf(address(this))
-            );
         }
+        emit TokensRecovered(_tokens);
     }
 
     // anyone can call
@@ -162,64 +149,29 @@ contract MainWallet is SimpleAccount {
         emit EthRecovered(newAccount, address(this).balance);
     }
 
-    // function recoverWalletNFTs(address[] calldata _tokens) external {
-    //     require(newAccount != address(0), "no recovery wallet was establised");
-
-    // }
-
-    function stringToBytes32(
-        string memory source
-    ) public pure returns (bytes32 result) {
-        bytes memory tempEmptyStringTest = bytes(source);
-        if (tempEmptyStringTest.length == 0) {
-            return 0x0;
-        }
-
-        assembly {
-            result := mload(add(source, 32))
-        }
-    }
-
-    function getAttestation(bytes32 recoveryKey) public view returns (bool) {
+    function getAttestation(bytes32 recoveryKey) public view returns (address) {
         //Connect to the attestation station and get the signatures from the recovery accounts
-        bytes32 attestation1 = bytes32(
-            attestationStationContract.attestations(
+        address attestation1 = convertBytesToAddress(attestationStationContract.attestations(
                 recoveryAccount1,
                 address(this),
                 recoveryKey
-            )
-        );
-
-        bytes32 attestation2 = bytes32(
-            attestationStationContract.attestations(
+        ));
+        address attestation2 = convertBytesToAddress(attestationStationContract.attestations(
                 recoveryAccount2,
                 address(this),
                 recoveryKey
-            )
-        );
+        ));
 
-        bytes32 attestation3 = bytes32(
-            attestationStationContract.attestations(
+        address attestation3 = convertBytesToAddress(attestationStationContract.attestations(
                 recoveryAccount3,
                 address(this),
                 recoveryKey
-            )
-        );
+        ));
+        require(attestation1 == attestation2 && attestation1 == attestation3, "Attestations not done");
+        return attestation3;
+    }
 
-        bool attestationStatus;
-        bytes32 valid = stringToBytes32("1");
-
-        //all values above should not equal to "0x"
-        if (
-            attestation1 == valid &&
-            attestation2 == valid &&
-            attestation3 == valid
-        ) {
-            attestationStatus = true;
-        } else {
-            attestationStatus = false;
-        }
-
-        return attestationStatus;
+    function convertBytesToAddress(bytes memory attestationData) private pure returns(address) {
+        return address(uint160(bytes20(attestationData)));
     }
 }

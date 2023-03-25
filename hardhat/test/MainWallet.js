@@ -58,7 +58,7 @@ describe("MainWallet", function () {
     confirmRecoveryKey = encodeRawKey("confirm.account.recovery");
 
     //val 1 should be in bytes
-    val = ethers.utils.formatBytes32String("1");
+    val = ethers.utils.solidityPack(['address'], ["0xcd3B766CCDd6AE721141F452C550Ca635964ce71"]);
 
     return {
       attestationStation,
@@ -88,7 +88,7 @@ describe("MainWallet", function () {
         deployTokenFixture
       );
 
-      expect(await mainWallet.attestationStation()).to.equal(
+      expect(await mainWallet.attestationStationContract()).to.equal(
         attestationStationProxy.address
       );
     });
@@ -175,8 +175,7 @@ describe("MainWallet", function () {
             .connect(addr3)
             .attest(mainWallet.address, confirmRecoveryKey, val, sigAddr3);
 
-          expect(await mainWallet.getAttestation(confirmRecoveryKey)).to.be
-            .true;
+          expect(await mainWallet.getAttestation(confirmRecoveryKey)).to.equal("0xcd3B766CCDd6AE721141F452C550Ca635964ce71");
         });
 
         it("should return false if not all attestations are received", async function () {
@@ -228,8 +227,7 @@ describe("MainWallet", function () {
             .connect(addr2)
             .attest(mainWallet.address, confirmRecoveryKey, val, sigAddr2);
 
-          expect(await mainWallet.getAttestation(confirmRecoveryKey)).to.be
-            .false;
+          await expect(mainWallet.getAttestation(confirmRecoveryKey)).to.be.revertedWith("Attestations not done");
         });
       });
     });
