@@ -3,7 +3,7 @@ const {addressList} = require("../addresses.js");
 
 async function main() {
     const walletFactoryDeployer = await ethers.getContractFactory('MainWalletFactory');
-    const walletFactory = await walletFactoryDeployer.deploy(addressList.entryPoint, addressList.attestationStation);
+    const walletFactory = await walletFactoryDeployer.deploy(addressList.entryPoint, addressList.attestationStation, addressList.automate);
     await walletFactory.deployed();
     console.log("wallet factory address deployed to:", walletFactory.address);
 }
