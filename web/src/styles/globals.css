@@ -10,4 +10,8 @@
   .bg-grad {
     @apply bg-gradient-to-tr from-primary to-secondary;
   }
+
+  .input {
+    @apply bg-bg3 rounded-lg p-2 w-full outline-none focus:ring-primary focus:ring-2 placeholder:truncate;
+  }
 }

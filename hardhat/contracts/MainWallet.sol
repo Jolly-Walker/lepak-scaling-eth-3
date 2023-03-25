@@ -4,9 +4,23 @@ pragma solidity ^0.8.9;
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@account-abstraction/contracts/samples/SimpleAccount.sol";
 import { AutomateReady } from "../automate/contracts/integrations/AutomateReady.sol";
+import "./AttestationStation.sol";
 
 // added some starter code
 contract MainWallet is SimpleAccount, AutomateReady {
+    //create an event type to emit when social recovery accounts are added
+    event SocialRecoveryAccountAdded(
+        address recoveryAccount1,
+        address recoveryAccount2,
+        address recoveryAccount3
+    );
+
+    event NewAccountIdentified(address newAccount);
+
+    event TokensRecovered(address[] tokens);
+
+    event EthRecovered(address newAccount, uint256 ethBalance);
+
     struct ReccuringPayeeInfo {
         uint256 paymentAmount;
         address token;
@@ -15,8 +29,10 @@ contract MainWallet is SimpleAccount, AutomateReady {
     }
 
     mapping(address => ReccuringPayeeInfo) public reccuringPayments;
+    address[] public payees;
     // address[] public socialRecoveryAccounts;
-    address public attestationStation;
+    AttestationStation public attestationStationContract;
+
     address public recoveryAccount1;
     address public recoveryAccount2;
     address public recoveryAccount3;
@@ -29,7 +45,11 @@ contract MainWallet is SimpleAccount, AutomateReady {
         address _attestationStation,
         address _automate
     ) SimpleAccount(anEntryPoint) AutomateReady(_automate, address(this)) {
-        attestationStation = _attestationStation;
+        attestationStationContract = AttestationStation(_attestationStation);
+    }
+
+    function initialize(address anOwner) public override initializer {
+        _initialize(anOwner);
     }
 
     // only wallet owner can call
@@ -39,14 +59,24 @@ contract MainWallet is SimpleAccount, AutomateReady {
         address _token,
         uint256 _period,
         uint256 _firstPaymentBlock
-    ) public {
+    ) public onlyOwner {
         ReccuringPayeeInfo memory newInfo;
         newInfo.paymentAmount = _amount;
         newInfo.token = _token;
         newInfo.period = _period;
         newInfo.lastPaymentBlock - _firstPaymentBlock;
 
+        payees.push(_payeeWallet);
         reccuringPayments[_payeeWallet] = newInfo;
+        // emit some event
+    }
+
+    // only wallet owner can call
+    function removeReccuringPayment(uint256 _payeeIndex) public onlyOwner {
+        address payeeWallet = payees[_payeeIndex];
+        payees[_payeeIndex] = payees[payees.length - 1];
+        payees.pop();
+        delete reccuringPayments[payeeWallet];
         // emit some event
     }
 
@@ -80,19 +110,31 @@ contract MainWallet is SimpleAccount, AutomateReady {
         address _account1,
         address _account2,
         address _account3
-    ) external onlyOwner {
+    ) external {
         recoveryAccount1 = _account1;
         recoveryAccount2 = _account2;
         recoveryAccount3 = _account3;
 
         // emit some event
+        emit SocialRecoveryAccountAdded(
+            recoveryAccount1,
+            recoveryAccount2,
+            recoveryAccount3
+        );
     }
 
     // anyone can call
-    function recoverAccount() external {
-        // check attestationStation for signatures, saying this account has been lost
-        // from the attestations, derive the address of the new wallet
-        // set that wallet as newAccount
+    // check attestationStation for signatures, saying this account has been lost
+    // if signatures are valid, then
+    // from the attestations, derive the address of the new wallet
+    // set that wallet as newAccount
+    function recoverAccount(bytes32 recoveryKey) external {
+        address attestedAccount = getAttestation(recoveryKey);
+
+        //Derive the new account address by calling the factory function, a sample is used for now
+        newAccount = attestedAccount;
+
+        emit NewAccountIdentified(newAccount);
     }
 
     // anyone can call
@@ -104,6 +146,7 @@ contract MainWallet is SimpleAccount, AutomateReady {
                 IERC20(_tokens[i]).balanceOf(address(this))
             );
         }
+        emit TokensRecovered(_tokens);
     }
 
     // anyone can call
@@ -113,10 +156,44 @@ contract MainWallet is SimpleAccount, AutomateReady {
         require(sent, "Failed to send Ether");
 
         // emit some event
+        emit EthRecovered(newAccount, address(this).balance);
     }
 
-    // function recoverWalletNFTs(address[] calldata _tokens) external {
-    //     require(newAccount != address(0), "no recovery wallet was establised");
+    function getAttestation(bytes32 recoveryKey) public view returns (address) {
+        //Connect to the attestation station and get the signatures from the recovery accounts
+        address attestation1 = convertBytesToAddress(
+            attestationStationContract.attestations(
+                recoveryAccount1,
+                address(this),
+                recoveryKey
+            )
+        );
+        address attestation2 = convertBytesToAddress(
+            attestationStationContract.attestations(
+                recoveryAccount2,
+                address(this),
+                recoveryKey
+            )
+        );
 
-    // }
+        address attestation3 = convertBytesToAddress(
+            attestationStationContract.attestations(
+                recoveryAccount3,
+                address(this),
+                recoveryKey
+            )
+        );
+
+        require(
+            attestation1 == attestation2 && attestation1 == attestation3,
+            "Attestations not done"
+        );
+        return attestation3;
+    }
+
+    function convertBytesToAddress(
+        bytes memory attestationData
+    ) private pure returns (address) {
+        return address(uint160(bytes20(attestationData)));
+    }
 }

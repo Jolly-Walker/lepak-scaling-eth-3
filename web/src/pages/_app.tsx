@@ -1,8 +1,8 @@
-import '@/styles/globals.css'
-import type { AppProps } from 'next/app'
-import { useState } from 'react'
+import "@/styles/globals.css";
+import type { AppProps } from "next/app";
+import { useState, useEffect } from "react";
 
-import Navbar from '@/components/Navbar';
+import Navbar from "@/components/Navbar";
 
 export default function App({ Component, pageProps }: AppProps) {
   const [isSignedIn, setIsSignedIn] = useState(false);
@@ -16,5 +16,5 @@ export default function App({ Component, pageProps }: AppProps) {
         </div>
       </main>
     </div>
-  )
+  );
 }
