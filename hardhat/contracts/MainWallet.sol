@@ -64,11 +64,9 @@ contract MainWallet is SimpleAccount {
     }
 
     // only wallet owner can call
-    function removeReccuringPayment(
-        uint256 _payeeIndex
-    ) public onlyOwner {
+    function removeReccuringPayment(uint256 _payeeIndex) public onlyOwner {
         address payeeWallet = payees[_payeeIndex];
-        payees[_payeeIndex] = payees[payees.length-1];
+        payees[_payeeIndex] = payees[payees.length - 1];
         payees.pop();
         delete reccuringPayments[payeeWallet];
         // emit some event
@@ -151,27 +149,39 @@ contract MainWallet is SimpleAccount {
 
     function getAttestation(bytes32 recoveryKey) public view returns (address) {
         //Connect to the attestation station and get the signatures from the recovery accounts
-        address attestation1 = convertBytesToAddress(attestationStationContract.attestations(
+        address attestation1 = convertBytesToAddress(
+            attestationStationContract.attestations(
                 recoveryAccount1,
                 address(this),
                 recoveryKey
-        ));
-        address attestation2 = convertBytesToAddress(attestationStationContract.attestations(
+            )
+        );
+        address attestation2 = convertBytesToAddress(
+            attestationStationContract.attestations(
                 recoveryAccount2,
                 address(this),
                 recoveryKey
-        ));
+            )
+        );
 
-        address attestation3 = convertBytesToAddress(attestationStationContract.attestations(
+        address attestation3 = convertBytesToAddress(
+            attestationStationContract.attestations(
                 recoveryAccount3,
                 address(this),
                 recoveryKey
-        ));
-        require(attestation1 == attestation2 && attestation1 == attestation3, "Attestations not done");
+            )
+        );
+
+        require(
+            attestation1 == attestation2 && attestation1 == attestation3,
+            "Attestations not done"
+        );
         return attestation3;
     }
 
-    function convertBytesToAddress(bytes memory attestationData) private pure returns(address) {
+    function convertBytesToAddress(
+        bytes memory attestationData
+    ) private pure returns (address) {
         return address(uint160(bytes20(attestationData)));
     }
 }
