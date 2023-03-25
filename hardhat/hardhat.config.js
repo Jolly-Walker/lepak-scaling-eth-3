@@ -10,8 +10,8 @@ encodeRawKey = (rawKey) => {
   return hash.slice(0, 64) + "ff";
 };
 
-attestationProxyAddr = "0x9aB93189D582C6C2ED33EC658023650231188475";
-attestationStationProxyAddr = "0x725552d5a03766908d1A919B168a622187076756";
+attestationProxyAddr = "0xd0dAd0622b848f3f290B3611A5d5610BFA81bE09";
+attestationStationProxyAddr = "0xc2361C2Eb9fc7010f7FCb9F79d7bFAEEFE5CDAb2";
 
 task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   const accounts = await hre.ethers.getSigners();
