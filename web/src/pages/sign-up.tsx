@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
+import { ethers } from "ethers";
 
 export default function SignUp() {
   const router = useRouter();
@@ -30,8 +31,12 @@ export default function SignUp() {
       return;
     }
     setIsLoading(true);
-    const res = await fetch(`/api/getSimpleAccount?password=${passwords[0]}`);
+    const signingKey = ethers.utils
+      .keccak256(ethers.utils.toUtf8Bytes(passwords[0] as string))
+      .slice(2);
+    const res = await fetch(`/api/getSimpleAccount?key=${signingKey}`);
     const wallet = await res.json();
+    console.log(wallet)
     localStorage.setItem("wallet", JSON.stringify(wallet));
     router.push("/dashboard");
   };

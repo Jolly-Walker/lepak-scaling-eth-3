@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-// import { useAccount, useConnect, useDisconnect } from 'wagmi';
-// import { InjectedConnector } from 'wagmi/connectors/injected';
 import { ethers } from "ethers";
 import attestationProxyAbi from "@/lib/attestationProxyABI.json";
+import attestationStationAbi from "@/lib/attestationStationABI.json";
 
 export default function Attest() {
   const [addr, setAddr] = useState("");
   const [newAddr, setNewAddr] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
   const encodeRawKey = (rawKey: string) => {
     if (rawKey.length < 32) return ethers.utils.formatBytes32String(rawKey);
@@ -14,6 +14,10 @@ export default function Attest() {
     const hash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(rawKey));
     return hash.slice(0, 64) + "ff";
   };
+
+  const copyAddr = () => {
+    navigator.clipboard.writeText(newAddr);
+  }
 
   // TODO: fix
   const attest = async () => {
@@ -25,9 +29,9 @@ export default function Attest() {
     const msgHash = ethers.utils.solidityKeccak256(
       ["address", "bytes32", "bytes"],
       [
-        "0x042c25573750b71b6d38C997654e43B3233F8E4D",
-        encodeRawKey(key),
-        ethers.utils.toUtf8Bytes(val),
+        addr,
+        key,
+        val,
       ]
     );
 
@@ -42,27 +46,23 @@ export default function Attest() {
 
     //sign the message
     const sig = await signer.signMessage(ethers.utils.arrayify(msgHash));
+    console.log(sig)
 
-    const rpc =
-      "https://polygon-mumbai.g.alchemy.com/v2/O2hr5ferYvqzEiz-c0yP4RE7xK_KiV96";
-    const sprovider = new ethers.providers.JsonRpcProvider(rpc);
-    const ssigner = sprovider.getSigner();
-    const abi = attestationProxyAbi;
     const contract = new ethers.Contract(
-      "0x1a1f1720A3a4CF7E1DE28434672e6b61643a943D",
-      abi,
+      "0x73b821968d8161Bff524Fae22c898f0CF6E32901",
+      attestationProxyAbi,
       signer
     );
-    // const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-    // const account = accounts[0];
+
     const r = await contract
-      .connect(signer)
       .attest("0x042c25573750b71b6d38C997654e43B3233F8E4D", key, val, sig);
     await r.wait();
     console.log(r);
-    // const provider = new ethers.providers.JsonRpcProvider('https://mainnet.infura.io/v3/your-project-id');
-    // const AttestationProxy = new ethers.Contract()
-    // const a = AttestationProxy.attach('0x1a1f1720A3a4CF7E1DE28434672e6b61643a943D')
+    
+    const getContract = new ethers.Contract("0x1a1f1720A3a4CF7E1DE28434672e6b61643a943D", attestationStationAbi, signer);
+    const res = await getContract.attestations(signer.getAddress(), addr, key);
+    console.log(res)
+    setNewAddr(res);
   };
 
   return (
@@ -94,8 +94,31 @@ export default function Attest() {
           onClick={attest}
           className="bg-grad px-4 py-3 rounded-lg w-full"
         >
-          Confirm account identity
+          {isLoading ? (
+            <>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.5}
+                stroke="currentColor"
+                className="w-8 h-8 animate-spin"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 7.5l-2.25-1.313M21 7.5v2.25m0-2.25l-2.25 1.313M3 7.5l2.25-1.313M3 7.5l2.25 1.313M3 7.5v2.25m9 3l2.25-1.313M12 12.75l-2.25-1.313M12 12.75V15m0 6.75l2.25-1.313M12 21.75V19.5m0 2.25l-2.25-1.313m0-16.875L12 2.25l2.25 1.313M21 14.25v2.25l-2.25 1.313m-13.5 0L3 16.5v-2.25"
+                />
+              </svg>
+            </>
+          ) : (
+            "Confirm account identity"
+          )}
         </button>
+        { newAddr.length > 0 && (<div>
+          <p className="px-2">New account address (click to copy): </p>
+          <p className="hover:cursor-pointer hover:bg-white hover:bg-opacity-10 p-2 rounded-md active:bg-opacity-0" onClick={copyAddr}>{newAddr}</p>
+        </div>)}
       </div>
     </div>
   );

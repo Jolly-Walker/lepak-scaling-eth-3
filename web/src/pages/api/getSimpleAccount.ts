@@ -12,13 +12,10 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { password } = req.query;
-  const signingKey = ethers.utils
-    .keccak256(ethers.utils.toUtf8Bytes(password as string))
-    .slice(2);
+  const { key } = req.query;
 
   const provider = new ethers.providers.JsonRpcProvider(RPC_URL);
-  const owner = new ethers.Wallet(signingKey, provider);
+  const owner = new ethers.Wallet('0xac5bbdd9b7138f413e849e9e9d91d9a81735bbbf9a661ac4818f195c23a74afa', provider);
   const sw = new SimpleAccountAPI({
     provider,
     entryPointAddress: entryPointAddress as string,
