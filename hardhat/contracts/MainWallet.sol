@@ -3,7 +3,7 @@ pragma solidity ^0.8.9;
 
 import "@openzeppelin/contracts/interfaces/IERC20.sol";
 import "@account-abstraction/contracts/samples/SimpleAccount.sol";
-import { AutomateReady } from "../automate/contracts/integrations/AutomateReady.sol";
+import {AutomateReady} from "../automate/contracts/integrations/AutomateReady.sol";
 import "./AttestationStation.sol";
 
 // added some starter code
@@ -39,7 +39,7 @@ contract MainWallet is SimpleAccount, AutomateReady {
     address public newAccount; // new wallet if user lost the current wallet
 
     // _automate for Optimism Goerli - 0x255F82563b5973264e89526345EcEa766DB3baB2
-    // _taskCreator will be this.address 
+    // _taskCreator will be this.address
     constructor(
         IEntryPoint anEntryPoint,
         address _attestationStation,
@@ -64,7 +64,7 @@ contract MainWallet is SimpleAccount, AutomateReady {
         newInfo.paymentAmount = _amount;
         newInfo.token = _token;
         newInfo.period = _period;
-        newInfo.lastPaymentBlock - _firstPaymentBlock;
+        newInfo.lastPaymentBlock = _firstPaymentBlock;
 
         payees.push(_payeeWallet);
         reccuringPayments[_payeeWallet] = newInfo;
@@ -98,7 +98,7 @@ contract MainWallet is SimpleAccount, AutomateReady {
         IERC20(info.token).transfer(_payeeWallet, info.paymentAmount);
         reccuringPayments[_payeeWallet].lastPaymentBlock += block.number;
 
-        // Use this to pay for Gelato fee 
+        // Use this to pay for Gelato fee
         (uint256 fee, address feeToken) = _getFeeDetails();
         _transfer(fee, feeToken);
 
