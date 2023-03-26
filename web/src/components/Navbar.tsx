@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
+import Link from 'next/link';
+import Image from 'next/image';
 
 export default function Navbar({ isSignedIn }) {
   const [isOpen, setIsOpen] = useState(false);
@@ -7,37 +9,37 @@ export default function Navbar({ isSignedIn }) {
     <>
       <header className="">
         <div className="h-16 mx-auto flex items-center justify-between px-4 xl:container lg:px-16 xl:px-20">
-          <a
+          <Link
             href="/"
             className="mr-6 flex gap-2 items-center text-xl font-bold"
           >
-            <img src="/logo.png" alt="logo" className="h-16" />
+            <Image src="/logo.png" alt="logo" height={64} width={64} />
             RecurriPay
-          </a>
+          </Link>
           <nav className="flex gap-6">
             <div className="hidden md:block space-x-6 ">
               {!isSignedIn ? (
                 <>
-                  <a href="/">Home</a>
-                  <a href="/about">About</a>
-                  <a
+                  <Link href="/">Home</Link>
+                  <Link href="/about">About</Link>
+                  <Link
                     href="/dashboard"
                     className="bg-grad text-transparent bg-clip-text"
                   >
                     Sign in
-                  </a>
-                  <a
+                  </Link>
+                  <Link
                     href="/dashboard"
                     className="text-xl bg-grad px-4 py-2 rounded-lg inline-block"
                   >
                     Get started
-                  </a>
+                  </Link>
                 </>
               ) : (
                 <>
-                  <a href="/dashboard">Dashboard</a>
-                  <a href="/notifications">Notifications</a>
-                  <a href="/account">Account</a>
+                  <Link href="/dashboard">Dashboard</Link>
+                  <Link href="/transactions">Transactions</Link>
+                  <Link href="/account">Account</Link>
                 </>
               )}
             </div>
@@ -87,15 +89,15 @@ export default function Navbar({ isSignedIn }) {
       >
         {!isSignedIn ? (
           <>
-            <a href="/">Home</a>
-            <a href="/about">About</a>
-            <a href="/dashboard">Sign in</a>
+            <Link href="/">Home</Link>
+            <Link href="/about">About</Link>
+            <Link href="/dashboard">Sign in</Link>
           </>
         ) : (
           <>
-            <a href="/dashboard">Dashboard</a>
-            <a href="/notifications">Notifications</a>
-            <a href="/account">Account in</a>
+            <Link href="/dashboard">Dashboard</Link>
+            <Link href="/transactions">Transactions</Link>
+            <Link href="/account">Account</Link>
           </>
         )}
       </nav>

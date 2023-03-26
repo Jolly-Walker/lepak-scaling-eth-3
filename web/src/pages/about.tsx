@@ -1,7 +1,7 @@
 export default function About() {
   return (
     <div className="space-y-4 text-lg max-w-3xl mx-auto">
-      <h1 className="text-2xl font-bold mb-2">About RecurPay</h1>
+      <h1 className="text-2xl font-bold mb-2">About RecurriPay</h1>
       <p>
         This project leverages account abstraction to build a wallet which
         enables recurring payments and social recovery. Under the hood, it uses
@@ -17,7 +17,7 @@ export default function About() {
         subscription or DCA-ing. This project is deployed to the Optimism,
         Scroll, and Polygon chains.
       </p>
-      <h2 className="text-xl font-bold">How it's made</h2>
+      <h2 className="text-xl font-bold">How it&apos;s made</h2>
       <p>
         The frontend of this project is built using React. Under the hood, this
         project builds on top of the @account-abstraction-sdk by Eth-infinitism

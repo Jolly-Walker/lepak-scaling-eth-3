@@ -8,7 +8,7 @@ export default function Attest() {
   const [addr, setAddr] = useState("");
   const [newAddr, setNewAddr] = useState("");
 
-  const encodeRawKey = (rawKey) => {
+  const encodeRawKey = (rawKey: string) => {
     if (rawKey.length < 32) return ethers.utils.formatBytes32String(rawKey);
 
     const hash = ethers.utils.keccak256(ethers.utils.toUtf8Bytes(rawKey));
@@ -51,7 +51,7 @@ export default function Attest() {
     const contract = new ethers.Contract(
       "0x1a1f1720A3a4CF7E1DE28434672e6b61643a943D",
       abi,
-      sprovider
+      signer
     );
     // const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
     // const account = accounts[0];

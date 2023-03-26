@@ -2,11 +2,14 @@ import "@/styles/globals.css";
 import type { AppProps } from "next/app";
 import { useState, useEffect } from "react";
 import { WalletContextProvider } from "@/context/WalletContext";
+import { useRouter } from 'next/router';
 
 import Navbar from "@/components/Navbar";
 
 export default function App({ Component, pageProps }: AppProps) {
-  const [isSignedIn, setIsSignedIn] = useState(false);
+  const router = useRouter();
+  const path = router.asPath;
+  const isSignedIn = ['/dashboard', 'attest'].includes(path)
 
   return (
     <>
