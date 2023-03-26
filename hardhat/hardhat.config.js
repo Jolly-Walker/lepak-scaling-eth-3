@@ -150,6 +150,8 @@ module.exports = {
     apiKey: {
       mainnet: process.env.ETHERSCAN_API_KEY,
       optimisticGoerli: process.env.OPTIMISTIC_GOERLI_API_KEY,
+      polygonMumbai: process.env.POLYGONSCAN_API_KEY,
+      optimisticEthereum: process.env.OPTIMISTIC_GOERLI_API_KEY,
     },
   },
   solidity: "0.8.17",
@@ -189,6 +191,22 @@ module.exports = {
         mnemonic: process.env.MNEMONIC,
       },
     },
+    polygonMumbai: {
+      url: process.env.ALCHEMY_API_KEY_POLYGON_MUMBAI
+        ? `https://polygon-mumbai.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY_POLYGON_MUMBAI}`
+        : process.env.POLYGON_MUMBAI_URL,
+      accounts: {
+        mnemonic: process.env.MNEMONIC,
+      },
+    },
+    optimism: {
+      url: process.env.ALCHEMY_API_KEY_OPTIMISM
+        ? `https://opt-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY_OPTIMISM}`
+        : process.env.OPTIMISM_URL,
+      accounts: {
+        mnemonic: process.env.MNEMONIC,
+      },
+    },
   },
   namedAccounts: {
     deployer: {
@@ -196,6 +214,8 @@ module.exports = {
       ethSepolia: 6,
       optimismGoerli: 8,
       scrollAlpha: 8,
+      polygonMumbai: 8,
+      optimism: 6,
     },
   },
   mocha: {
