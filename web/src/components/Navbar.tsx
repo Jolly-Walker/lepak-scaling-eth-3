@@ -12,7 +12,7 @@ export default function Navbar({ isSignedIn }) {
             className="mr-6 flex gap-2 items-center text-xl font-bold"
           >
             <img src="/logo.png" alt="logo" className="h-16" />
-            RecurPay
+            RecurriPay
           </a>
           <nav className="flex gap-6">
             <div className="hidden md:block space-x-6 ">
@@ -21,13 +21,13 @@ export default function Navbar({ isSignedIn }) {
                   <a href="/">Home</a>
                   <a href="/about">About</a>
                   <a
-                    href="/sign-in"
+                    href="/dashboard"
                     className="bg-grad text-transparent bg-clip-text"
                   >
                     Sign in
                   </a>
                   <a
-                    href="/sign-up"
+                    href="/dashboard"
                     className="text-xl bg-grad px-4 py-2 rounded-lg inline-block"
                   >
                     Get started
@@ -89,7 +89,7 @@ export default function Navbar({ isSignedIn }) {
           <>
             <a href="/">Home</a>
             <a href="/about">About</a>
-            <a href="/sign-in">Sign in</a>
+            <a href="/dashboard">Sign in</a>
           </>
         ) : (
           <>
