@@ -13,20 +13,20 @@ export default function Dashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const { address, setAddress } = useContext(WalletContext);
 
-  // payments from lib/polybase doesn't run server side
-  const getPayments = async () => {
-    const res = await payments.get();
-    setRecurringPayments(res.data.map((d) => d.data));
-    setIsLoading(false);
-    console.log(res, recurringPayments);
-  };
-
   useEffect(() => {
+    // payments from lib/polybase doesn't run server side
+    const getPayments = async () => {
+      const res = await payments.get();
+      setRecurringPayments(res.data.map((d) => d.data));
+      setIsLoading(false);
+      console.log(res, recurringPayments);
+    };
+
     getPayments();
     const stored = localStorage.getItem("wallet");
     setAddress(JSON.parse(stored).address);
     setWallet(JSON.parse(stored));
-  }, [getPayments, setAddress]);
+  }, [setAddress]);
 
   return (
     <>
