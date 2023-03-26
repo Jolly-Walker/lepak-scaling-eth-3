@@ -3,13 +3,14 @@ import animation from "@/lib/hero.json";
 
 export default function Home() {
   return (
+  <div className="space-y-8">
     <div className="flex justify-between items-center md:pt-12">
       <div className="w-full hidden md:block">
         <Player autoplay loop src={animation} className="max-w-xl"></Player>
       </div>
       <div className="space-y-8">
         <h1 className="font-bold text-4xl sm:text-6xl lg:text-7xl max-w-5xl">
-          Simplify Your Crypto Payments With Recurpay
+          Simplify Your Crypto Payments With RecurriPay
         </h1>
         <p className="text-xl lg:text-2xl max-w-7xl font-medium">
           Getting started with crypto and web3 and can be an overwhelming
@@ -24,5 +25,8 @@ export default function Home() {
         </a>
       </div>
     </div>
+    <div className="flex justify-between items-center md:pt-12">
+    </div>
+  </div>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useState, Dispatch } from "react";
 
-import { payments } from '@/lib/polybase';
-import type { RecurPayment } from '@/lib/types';
+import { payments } from "@/lib/polybase";
+import type { RecurPayment } from "@/lib/types";
 
 export default function RecurModal({
   isOpen,
@@ -10,39 +10,46 @@ export default function RecurModal({
 }: {
   isOpen: boolean;
   setIsOpen: Dispatch<boolean>;
-  onClose: any
+  onClose: any;
 }) {
   // TODO: change to 1 usestate only
-  const [to, setTo] = useState('');
+  const [to, setTo] = useState("");
   const [amt, setAmt] = useState(0);
-  const [date, setDate] = useState('');
-  const [freq, setFreq] = useState('monthly');
-  const [invalidInput, setInvalidInput] = useState('');
+  const [date, setDate] = useState("");
+  const [freq, setFreq] = useState("monthly");
+  const [invalidInput, setInvalidInput] = useState("");
 
   const createPayment = async () => {
     if (to.length === 0 || date.length === 0) {
-      setInvalidInput('Please fill in all fields');
+      setInvalidInput("Please fill in all fields");
       return;
     }
     if (amt === 0) {
-      setInvalidInput('Please enter a valid amount to send');
+      setInvalidInput("Please enter a valid amount to send");
       return;
     }
     // change id with transaction id of create recurring payment
-    const rec = await payments.create(['0x1337testing4', '0x042c25573750b71b6d38C997654e43B3233F8E4D', to, amt, freq, date]);
-    console.log('polybase.create:', rec);
+    const rec = await payments.create([
+      "0x1337testing4",
+      "0x042c25573750b71b6d38C997654e43B3233F8E4D",
+      to,
+      amt,
+      freq,
+      date,
+    ]);
+    console.log("polybase.create:", rec);
     onClose(rec.data);
     cleanup();
     setIsOpen(false);
-  }
+  };
 
   const cleanup = () => {
-    setTo('');
+    setTo("");
     setAmt(0);
-    setDate('');
-    setFreq('');
-    setInvalidInput('');
-  }
+    setDate("");
+    setFreq("");
+    setInvalidInput("");
+  };
 
   return (
     <>
@@ -64,11 +71,11 @@ export default function RecurModal({
                 </div>
                 <div>
                   <label className="block mb-2">Amount</label>
-                  <input 
+                  <input
                     required
                     className="input"
                     type="number"
-                    placeholder="0.005 ETH" 
+                    placeholder="0.005 ETH"
                     value={amt}
                     onChange={(e) => {
                       const n = parseFloat(e.target.value);
@@ -78,12 +85,12 @@ export default function RecurModal({
                 </div>
                 <div>
                   <label className="block mb-2">Payment date</label>
-                  <input 
-                    required 
-                    type="date" 
+                  <input
+                    required
+                    type="date"
                     value={date}
                     onChange={(e) => setDate(e.target.value)}
-                    className="input" 
+                    className="input"
                   />
                 </div>
                 <div className="flex gap-6 pt-2">
@@ -119,9 +126,11 @@ export default function RecurModal({
                   </div>
                 </div>
               </div>
-              { invalidInput.length > 0 && (<>
-                <small className="text-red-400 text-sm">{invalidInput}</small>
-              </>)}
+              {invalidInput.length > 0 && (
+                <>
+                  <small className="text-red-400 text-sm">{invalidInput}</small>
+                </>
+              )}
               <div className="flex gap-4">
                 <button
                   onClick={() => setIsOpen(false)}

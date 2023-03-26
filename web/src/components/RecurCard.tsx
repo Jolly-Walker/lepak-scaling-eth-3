@@ -1,7 +1,13 @@
 import React from "react";
-import type { RecurPayment } from '@/lib/types';
+import type { RecurPayment } from "@/lib/types";
 
-export default function RecurCard({ id, payment }: { id: number, payment: RecurPayment }) {
+export default function RecurCard({
+  id,
+  payment,
+}: {
+  id: number;
+  payment: RecurPayment;
+}) {
   const lookup = { monthly: "bg-primary", weekly: "bg-secondary text-bg" };
 
   return (
@@ -9,7 +15,9 @@ export default function RecurCard({ id, payment }: { id: number, payment: RecurP
       <div className="flex gap-2 items-center mb-4">
         <p className="text-xl font-bold">Payment #{id}</p>
         <p
-          className={"text-sm font-medium px-1 rounded " + lookup[payment.frequency]}
+          className={
+            "text-sm font-medium px-1 rounded " + lookup[payment.frequency]
+          }
         >
           {payment.frequency}
         </p>
