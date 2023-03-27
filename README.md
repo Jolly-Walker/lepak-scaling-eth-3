@@ -80,7 +80,7 @@ npm run dev
 ### Scroll Alpha
 [AttestationStation](https://blockscout.scroll.io/address/0x165B924538914B80162da3aB987065B43bbeE497/contracts#address-tabs)
 [AttestationStationProxy](https://blockscout.scroll.io/address/0x725552d5a03766908d1A919B168a622187076756/contracts#address-tabs)
-[AttestationProxy](https://blockscout.scroll.io/address/0x165B924538914B80162da3aB987065B43bbeE497/contracts#address-tabs)
+[AttestationProxy](https://blockscout.scroll.io/address/0x9aB93189D582C6C2ED33EC658023650231188475/contracts#address-tabs)
 
 ### Polygon Mumbai
 [AttestationStation](https://mumbai.polygonscan.com/address/0x165B924538914B80162da3aB987065B43bbeE497#code)
