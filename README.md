@@ -1,4 +1,4 @@
-﻿# RecurriPay
+﻿# (🔄) RecurriPay - F**k private keys.
 
 ## Intro 👋
 This project aims to tackle 2 key problems with crypto wallets. 
