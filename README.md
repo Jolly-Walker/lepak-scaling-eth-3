@@ -75,7 +75,7 @@ npm run dev
 ### Optimistic Goerli
 [AttestationStation](https://goerli-optimism.etherscan.io/address/0xdce225e1247e3AF602d3541168521a94a053F4bc#code)
 [AttestationStationProxy](https://goerli-optimism.etherscan.io/address/0xc2361C2Eb9fc7010f7FCb9F79d7bFAEEFE5CDAb2#code)
-[AttestationProxy](https://goerli-optimism.etherscan.io/address/0x9aB93189D582C6C2ED33EC658023650231188475#code)
+[AttestationProxy](https://goerli-optimism.etherscan.io/address/0xd0dAd0622b848f3f290B3611A5d5610BFA81bE09#code)
 
 ### Scroll Alpha
 [AttestationStation](https://blockscout.scroll.io/address/0x165B924538914B80162da3aB987065B43bbeE497/contracts#address-tabs)
