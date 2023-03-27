@@ -70,7 +70,7 @@ npm run dev
 
 ## Deployments ⛓️
 ### Optimism Mainnet
-[AttestationStation](https://optimistic.etherscan.io/address/0xF400AEc6e1868d075Bf458B56990FeC79Da1557b#code)
+[AttestationProxy](https://optimistic.etherscan.io/address/0xF400AEc6e1868d075Bf458B56990FeC79Da1557b#code)
 
 ### Optimistic Goerli
 [AttestationStation](https://goerli-optimism.etherscan.io/address/0xdce225e1247e3AF602d3541168521a94a053F4bc#code)
